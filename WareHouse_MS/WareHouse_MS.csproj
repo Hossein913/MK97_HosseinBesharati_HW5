@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Domain\Product.cs" />
     <Compile Include="Domain\Stock.cs" />
+    <Compile Include="Interface\IProductRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

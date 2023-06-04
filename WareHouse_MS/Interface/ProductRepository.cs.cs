@@ -11,11 +11,7 @@ namespace WareHouse_MS.Interface
 {
     public class ProductRepository : IProductRepository
     {
-        private static string workingDirectory = Environment.CurrentDirectory;
-        private static string projectDirectory = Directory.GetParent(workingDirectory).Parent.FullName;
-        private static string Database = String.Concat(projectDirectory, "\\Database\\ProductJson.json");
-        
-
+      
         public string AddProduct(Product product)
         {
             string SerializedString;
@@ -29,24 +25,20 @@ namespace WareHouse_MS.Interface
                 }
 
                 products.Add(product);
-                SerializedString = JsonConvert.SerializeObject(products);
-
-                using (StreamWriter writer = new StreamWriter(Common.GetProjectDirectory("\\DataBase\\ProductJson.json")))
-                    writer.Write(SerializedString);
-
+                JsonConvert.SerializeObject(products).WriteOnFile(Common.GetProjectDirectory("\\DataBase\\ProductJson.json"));
                 return product.Name;
-
 
             }
 
             return null;
         }
-
         public string GetProductById(int id)
         {
-            throw new NotImplementedException();
+            string DatabaseString = File.ReadAllText(Common.GetProjectDirectory("\\DataBase\\ProductJson.json"));
+            string products = String.Empty;
+            products = JsonConvert.DeserializeObject<List<Product>>(DatabaseString).Single(item => item.ProductId == id).Name;
+            return products;
         }
-
         public List<Product> GetProductList()
         {
             CheckDatabase(Common.GetProjectDirectory("\\DataBase\\ProductJson.json"));
@@ -56,10 +48,8 @@ namespace WareHouse_MS.Interface
         }
         public bool CheckProductName(string productName)
         {
-            throw new NotImplementedException();
+            return true;
         }
-
-
         private void CheckDatabase(string Directory)
         {
             if (!File.Exists(Directory))

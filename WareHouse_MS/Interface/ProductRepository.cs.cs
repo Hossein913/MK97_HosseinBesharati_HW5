@@ -31,7 +31,7 @@ namespace WareHouse_MS.Interface
                 products.Add(product);
                 SerializedString = JsonConvert.SerializeObject(products);
 
-                using (StreamWriter writer = new StreamWriter(Database))
+                using (StreamWriter writer = new StreamWriter(Common.GetProjectDirectory("\\DataBase\\ProductJson.json")))
                     writer.Write(SerializedString);
 
                 return product.Name;
@@ -49,8 +49,8 @@ namespace WareHouse_MS.Interface
 
         public List<Product> GetProductList()
         {
-            CheckDatabase(Database);
-            string DatabaseString = File.ReadAllText(Database);
+            CheckDatabase(Common.GetProjectDirectory("\\DataBase\\ProductJson.json"));
+            string DatabaseString = File.ReadAllText(Common.GetProjectDirectory("\\DataBase\\ProductJson.json"));
             var products = JsonConvert.DeserializeObject<List<Product>>(DatabaseString);
             return products;
         }

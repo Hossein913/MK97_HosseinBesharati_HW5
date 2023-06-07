@@ -39,7 +39,7 @@ namespace WareHouse_MS.Interface
                 var stock = Stocks.Single<Stock>(item => item.StockId == productInStock.StockId);
 
                 stock.Name = productInStock.Name;
-                stock.ProductPirce = UpdatePrice(stock, productInStock);
+                stock.ProductPrice = UpdatePrice(stock, productInStock);
                 stock.ProductQuantity += productInStock.ProductQuantity;
                 JsonConvert.SerializeObject(Stocks).WriteOnFile("\\DataBase\\StockJson.json");
             }
@@ -121,8 +121,8 @@ namespace WareHouse_MS.Interface
         }
         private decimal UpdatePrice(Stock stock, Stock productInStock)
         {
-            return ((stock.ProductPirce * stock.ProductQuantity) +
-                (productInStock.ProductPirce * productInStock.ProductQuantity)) /
+            return ((stock.ProductPrice * stock.ProductQuantity) +
+                (productInStock.ProductPrice * productInStock.ProductQuantity)) /
                 (stock.ProductQuantity + productInStock.ProductQuantity);
         }
 

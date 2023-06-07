@@ -12,6 +12,10 @@ namespace WareHouse_MS.Domain
         public string Name { get; set; }
         public int ProductId { get; set; }
         public int ProductQuantity { get; set; }
-        public int ProductPirce { get; set; }
+        public decimal ProductPrice { get; set; }
+        public override string ToString()
+        {
+            return $"{ProductId}  {Name}   {ProductPrice}   {ProductQuantity}";
+        }
     }
 }

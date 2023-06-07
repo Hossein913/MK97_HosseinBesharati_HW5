@@ -9,9 +9,10 @@ namespace WareHouse_MS.Interface
 {
     public interface IStockRepository
     {
-        string SaleProduct(int productId, int cnt);
+        string SellProduct(int productId, int cnt);
         string BuyProduct(Stock productInStock);
-        List<Stock> GetSalesProductList();
+        List<Stock> GetSellProductList();
+        string BuyProduct(Stock productInStock, int Barcode);
 
     }
 }

@@ -11,33 +11,59 @@ namespace WareHouse_MS.Interface
 {
     public class ProductRepository : IProductRepository
     {
-      
         public string AddProduct(Product product)
         {
-            
-            if (CheckProductName(product.Name))
+            string SerializedString;
+
+            List<Product> products = GetProductList();
+            if (products == null)
             {
-
-                List<Product> products = GetProductList();
-                if (products == null)
-                {
-                    products = new List<Product>();
-                }
-
-                products.Add(product);
-                JsonConvert.SerializeObject(products).WriteOnFile(Common.GetProjectDirectory("\\DataBase\\ProductJson.json"));
-                return product.Name;
-
+                products = new List<Product>();
             }
 
-            return null;
+            products.Add(product);
+            SerializedString = JsonConvert.SerializeObject(products);
+
+            using (StreamWriter writer = new StreamWriter(Common.GetProjectDirectory("\\DataBase\\ProductJson.json")))
+                writer.Write(SerializedString);
+
+            return product.Name;
         }
+
         public string GetProductById(int id)
         {
             string DatabaseString = File.ReadAllText(Common.GetProjectDirectory("\\DataBase\\ProductJson.json"));
-            string products = String.Empty;
-            products = JsonConvert.DeserializeObject<List<Product>>(DatabaseString).Single(item => item.ProductId == id).Name;
-            return products;
+            string productsName = String.Empty;
+            Product products = null;
+            if (DatabaseString != "")
+            {
+                products = JsonConvert.DeserializeObject<List<Product>>(DatabaseString).SingleOrDefault(item => item.ProductId == id);
+                if (products != null)
+                {
+                    productsName = products.Name;
+                }
+            }
+
+            return productsName;
+
+        }
+
+        public string GetProductByName(string name)
+        {
+            string DatabaseString = File.ReadAllText(Common.GetProjectDirectory("\\DataBase\\ProductJson.json"));
+            string productsName = String.Empty;
+            Product products = null;
+            if (DatabaseString != "")
+            {
+                products = JsonConvert.DeserializeObject<List<Product>>(DatabaseString).SingleOrDefault(item => item.Name == name);
+                if (products != null)
+                {
+                    productsName = products.Name;
+                }
+            }
+
+            return productsName;
+
         }
         public List<Product> GetProductList()
         {
@@ -46,10 +72,23 @@ namespace WareHouse_MS.Interface
             var products = JsonConvert.DeserializeObject<List<Product>>(DatabaseString);
             return products;
         }
-        public bool CheckProductName(string productName)
+
+        public int GetlastProductId()
         {
-            return true;
+            string DatabaseString = File.ReadAllText(Common.GetProjectDirectory("\\DataBase\\ProductJson.json"));
+
+            if (DatabaseString != "")
+            {
+                return JsonConvert.DeserializeObject<List<Product>>(DatabaseString).Last().ProductId;
+            }
+            else
+            {
+                return 0;
+
+            }
+
         }
+
         private void CheckDatabase(string Directory)
         {
             if (!File.Exists(Directory))
@@ -57,6 +96,7 @@ namespace WareHouse_MS.Interface
                 File.Create(Directory);
             }
         }
+
 
     }
 }

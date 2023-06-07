@@ -22,20 +22,14 @@ namespace WareHouse_MS.Interface
         public string BuyProduct(Stock productInStock)
         {
 
-            List<Stock> Stocks = GetSalesProductList();
+            List<Stock> Stocks = GetSellProductList();
 
             if (Stocks == null)
             {
                 Stocks = new List<Stock>();
             }
 
-            string productName = productRepository.GetProductById(productInStock.ProductId);
-
-            if (productName == String.Empty)
-            {
-                throw new ProductNotFound();
-            }
-            else if (!Stocks.Contains(productInStock))
+            if (!Stocks.Contains(productInStock))
             {
                 Stocks.Add(productInStock);
                 JsonConvert.SerializeObject(Stocks).WriteOnFile("\\DataBase\\StockJson.json");
@@ -45,7 +39,7 @@ namespace WareHouse_MS.Interface
                 var stock = Stocks.Single<Stock>(item => item.StockId == productInStock.StockId);
 
                 stock.Name = productInStock.Name;
-                stock.ProductPirce = UpdatePirce(stock, productInStock);
+                stock.ProductPrice = UpdatePrice(stock, productInStock);
                 stock.ProductQuantity += productInStock.ProductQuantity;
                 JsonConvert.SerializeObject(Stocks).WriteOnFile("\\DataBase\\StockJson.json");
             }
@@ -56,13 +50,13 @@ namespace WareHouse_MS.Interface
         public string BuyProduct(Stock productInStock, int Barcode)
         {
             Product product =
-                new Product() { ProductId = productInStock.ProductId, Name = productInStock.Name, Barcode = Barcode };
+            new Product() { ProductId = productInStock.ProductId, Name = productInStock.Name, Barcode = Barcode };
             productRepository.AddProduct(product);
             return BuyProduct(productInStock);
         }
-        public string SaleProduct(int productId, int count)
+        public string SellProduct(int productId, int count)
         {
-            List<Stock> Stocks = GetSalesProductList();
+            List<Stock> Stocks = GetSellProductList();
             var stock = Stocks.Single<Stock>(item => item.ProductId == productId);
             if (GetProductQuantity(productId) >= count)
             {
@@ -77,17 +71,27 @@ namespace WareHouse_MS.Interface
 
         }
 
-        public List<Stock> GetSalesProductList()
+        public List<Stock> GetSellProductList()
         {
-            CheckDatabase(Common.GetProjectDirectory("\\DataBase\\Stock.json"));
-            string DatabaseString = File.ReadAllText(Common.GetProjectDirectory("\\DataBase\\Stock.json"));
-            var stock = JsonConvert.DeserializeObject<List<Stock>>(DatabaseString);
-            return stock;
+            CheckDatabase(Common.GetProjectDirectory("\\DataBase\\StockJson.json"));
+            string DatabaseString = File.ReadAllText(Common.GetProjectDirectory("\\DataBase\\StockJson.json"));
+
+            if (DatabaseString != "")
+            {
+                List<Stock> stock = JsonConvert.DeserializeObject<List<Stock>>(DatabaseString);
+                return stock;
+            }
+            else
+            {
+                return null;
+            }
+
+
         }
 
         public Stock GetProductById(int id)
         {
-            string DatabaseString = File.ReadAllText(Common.GetProjectDirectory("\\DataBase\\Stock.json"));
+            string DatabaseString = File.ReadAllText(Common.GetProjectDirectory("\\DataBase\\StockJson.json"));
             Stock products = JsonConvert.DeserializeObject<List<Stock>>(DatabaseString).SingleOrDefault(item => item.ProductId == id);
             return products;
 
@@ -96,7 +100,7 @@ namespace WareHouse_MS.Interface
         private int GetProductQuantity(int ProductId)
         {
 
-            string DatabaseString = File.ReadAllText(Common.GetProjectDirectory("\\DataBase\\Stock.json"));
+            string DatabaseString = File.ReadAllText(Common.GetProjectDirectory("\\DataBase\\StockJson.json"));
             Stock products = JsonConvert.DeserializeObject<List<Stock>>(DatabaseString).SingleOrDefault(item => item.ProductId == ProductId);
 
             if (products == null)
@@ -115,10 +119,10 @@ namespace WareHouse_MS.Interface
                 File.Create(Directory);
             }
         }
-        private int UpdatePirce(Stock stock, Stock productInStock)
+        private decimal UpdatePrice(Stock stock, Stock productInStock)
         {
-            return ((stock.ProductPirce * stock.ProductQuantity) +
-                (productInStock.ProductPirce * productInStock.ProductQuantity)) /
+            return ((stock.ProductPrice * stock.ProductQuantity) +
+                (productInStock.ProductPrice * productInStock.ProductQuantity)) /
                 (stock.ProductQuantity + productInStock.ProductQuantity);
         }
 

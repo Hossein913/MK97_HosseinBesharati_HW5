@@ -14,7 +14,7 @@ namespace WareHouse_MS.Interface
       
         public string AddProduct(Product product)
         {
-            string SerializedString;
+            
             if (CheckProductName(product.Name))
             {
 

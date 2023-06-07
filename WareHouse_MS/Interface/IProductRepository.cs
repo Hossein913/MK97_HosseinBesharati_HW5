@@ -12,5 +12,7 @@ namespace WareHouse_MS.Interface
         string AddProduct(Product product);
         List<Product> GetProductList();
         string GetProductById(int id);
+        string GetProductByName(string id);
+        int GetlastProductId();
     }
 }

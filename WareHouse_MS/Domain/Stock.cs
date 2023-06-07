@@ -10,7 +10,7 @@ namespace WareHouse_MS.Domain
     {
         public Guid StockId { get; set; }
         public string Name { get; set; }
-        public Guid ProductId { get; set; }
+        public int ProductId { get; set; }
         public int ProductQuantity { get; set; }
         public int ProductPirce { get; set; }
     }

@@ -13,5 +13,9 @@ namespace WareHouse_MS.Domain
         public int ProductId { get; set; }
         public int ProductQuantity { get; set; }
         public int ProductPirce { get; set; }
+        public override string ToString()
+        {
+            return $"{ProductId}  {Name}   {ProductPirce}   {ProductQuantity}";
+        }
     }
 }

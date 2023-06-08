@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace WareHouse_MS.UserInterface
@@ -32,7 +33,11 @@ namespace WareHouse_MS.UserInterface
 
         public static bool CheckProductName(string productName)
         {
-            return true;
+            if (Regex.IsMatch(productName,@"(^[A-z])+([a-z]{3})_(\d{3}$)"))
+            {
+                return true;
+            }
+            return false;
         }
 
     }

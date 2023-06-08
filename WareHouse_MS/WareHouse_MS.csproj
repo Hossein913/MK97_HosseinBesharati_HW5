@@ -55,8 +55,9 @@
     <Compile Include="Interface\IStockRepository.cs" />
     <Compile Include="Interface\ProductRepository.cs.cs" />
     <Compile Include="Interface\StockRepository.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="UserInterface\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserInterface\Validation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
